@@ -10,11 +10,15 @@
 <body class="bg-gray-100 text-gray-800">
 
   <div class="max-w-7xl mx-auto px-4 py-8">
-    <h1 class="text-3xl font-bold text-center mb-8">📸 Drive-Powered Image Gallery</h1>
+    <h1 class="text-3xl font-bold text-center mb-8">📸 Google Drive Image Gallery</h1>
 
+    <!-- Gallery Section -->
     <div id="gallery" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      <!-- Images will be injected here -->
+      <!-- Images will load here -->
     </div>
+
+    <!-- Loader (Initially visible) -->
+    <div id="loading" class="text-center text-blue-600 text-lg mt-8">Loading images...</div>
   </div>
 
   <script>
@@ -24,6 +28,9 @@
       .then(res => res.json())
       .then(images => {
         const gallery = document.getElementById("gallery");
+        const loading = document.getElementById("loading");
+
+        loading.style.display = "none"; // Hide loader
 
         images.forEach(img => {
           const card = document.createElement("div");
@@ -45,9 +52,10 @@
         });
       })
       .catch(err => {
-        console.error("Error loading images from API:", err);
-        const gallery = document.getElementById("gallery");
-        gallery.innerHTML = `<p class="col-span-full text-center text-red-600">Error loading images. Check API URL.</p>`;
+        console.error("Image loading error:", err);
+        const loading = document.getElementById("loading");
+        loading.innerHTML = "❌ Failed to load images. Please check the API URL and sharing permissions.";
+        loading.className = "text-center text-red-600 text-lg mt-8";
       });
   </script>
 
