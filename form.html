@@ -1,51 +1,62 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Submit Portfolio Query</title>
+  <title>Portfolio Form</title>
+  <style>
+    form {
+      width: 300px;
+      margin: 50px auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    input, textarea, button {
+      padding: 10px;
+      font-size: 16px;
+    }
+    #response {
+      text-align: center;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
-  <h2>Portfolio Form</h2>
+
   <form id="portfolio-form">
-    <input type="text" name="name" placeholder="Your Name" required><br><br>
-    <input type="text" name="contact" placeholder="Contact Number" required><br><br>
-    <input type="email" name="email" placeholder="Email" required><br><br>
-    <textarea name="query" placeholder="Your Query" required></textarea><br><br>
+    <input type="text" name="name" id="name" placeholder="Your Name" required>
+    <input type="text" name="contact" id="contact" placeholder="Contact Number" required>
+    <input type="email" name="email" id="email" placeholder="Email" required>
+    <textarea name="query" id="query" placeholder="Your Query" required></textarea>
     <button type="submit">Submit</button>
   </form>
 
-  <p id="response"></p>
+  <div id="response"></div>
 
   <script>
     const form = document.getElementById("portfolio-form");
-    const response = document.getElementById("response");
+    const responseBox = document.getElementById("response");
 
-    form.addEventListener("submit", function(e) {
+    form.addEventListener("submit", function (e) {
       e.preventDefault();
 
-      const formData = {
-        name: form.name.value,
-        contact: form.contact.value,
-        email: form.email.value,
-        query: form.query.value
-      };
+      const formData = new FormData(form);
 
-      fetch("https://script.google.com/macros/s/AKfycbzbEyD3V6gV5XJOIl7U1PHqluEZCjaxDZnXZyA_I2AAarKwWHiT22jhi_sCyPQyeuxPRA/exec", { 
+      fetch("https://script.google.com/macros/s/AKfycbzbEyD3V6gV5XJOIl7U1PHqluEZCjaxDZnXZyA_I2AAarKwWHiT22jhi_sCyPQyeuxPRA/exec", {
         method: "POST",
-        body: JSON.stringify(formData),
-        headers: {
-          "Content-Type": "application/json"
-        }
+        body: formData,
       })
-      .then(res => res.json())
+      .then(res => res.text())
       .then(data => {
-        response.textContent = "Submitted successfully!";
+        responseBox.textContent = data.includes("Success") ? "Form submitted successfully!" : data;
         form.reset();
       })
-      .catch(err => {
-        response.textContent = "Something went wrong.";
-        console.error(err);
+      .catch(error => {
+        console.error("Error:", error);
+        responseBox.textContent = "Something went wrong.";
       });
     });
   </script>
+
 </body>
 </html>
